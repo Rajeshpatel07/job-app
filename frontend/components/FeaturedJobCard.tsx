@@ -1,6 +1,24 @@
+import { useEffect, useState } from "react";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 
 export default function FeaturedJobCard() {
+
+  const [jobs, setJobs] = useState();
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const request = await fetch(`${process.env.API_URI}/api/jobs/featured?category=Design`);
+        const response = await request.json();
+        console.log(response)
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    fetchJobs();
+  }, [])
+
   return (
     <View className="my-2">
       <View className="flex flex-row items-center justify-between">

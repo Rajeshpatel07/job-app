@@ -1,24 +1,35 @@
 import {
   View,
-  Text,
   Image,
   TextInput,
   TouchableOpacity,
-  ScrollView,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FilterItems from "./ui/filterItems";
 
-export default function CategoryFilter() {
-  const [role, setRole] = useState<string>("All");
+interface category {
+  id: number;
+  name: string;
+}
 
-  const items = [
-    { title: "All" },
-    { title: "Acting" },
-    { title: "Photography" },
-    { title: "Dance" },
-    { title: "Engineer" },
-  ];
+export default function CategoryFilter() {
+
+  const [role, setRole] = useState<string>("All");
+  const [categories, setCategories] = useState<Array<category>>([{ id: 0, name: "All" }]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const request = await fetch(`${process.env.API_URI}/api/categories`);
+        const { categories } = await request.json();
+        console.log(categories);
+        setCategories(prev => [...prev, ...categories]);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    fetchCategories();
+  }, [])
 
   const handleRole = (role: string) => {
     setRole(role);
@@ -40,23 +51,11 @@ export default function CategoryFilter() {
           />
         </TouchableOpacity>
       </View>
-      <View className="overflow-x-scroll my-5 flex flex-row gap-2 items-center">
-        {items.map((item, idx) => (
-          <View
-            key={idx}
-            className={`border rounded-full ${item.title === role ? "bg-[#7C3AED]" : "bg-gray-800"
-              }`}
-          >
-            <Text
-              className="text-white px-5 py-2 text-lg text-center"
-              onPress={() => handleRole(item.title)}
-            >
-              {item.title}
-            </Text>
-          </View>
-        ))}
+      <View className="my-5 flex flex-row gap-2 items-center">
+        {categories !== null &&
+          <FilterItems role={role} handleRole={handleRole} categories={categories} />
+        }
       </View>
-      {/*<FilterItems role={role} handleRole={handleRole} items={items} />*/}
     </View>
   );
 }
