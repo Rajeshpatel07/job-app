@@ -21,7 +21,7 @@ export default function FilterItems({ categories, role, handleRole }: props) {
       {categories.map((item, idx) => (
         <View
           key={idx}
-          className={`mx-1 rounded-full ${item.name === role ? "bg-[#7C3AED]" : "bg-gray-800"
+          className={`mx-1 rounded-full ${item.name === role ? "bg-[#7C3AED]" : "bg-gray-900"
             }`}
         >
           <Text
