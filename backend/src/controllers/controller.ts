@@ -20,6 +20,14 @@ export const getFeaturedJobs = async (req: Request, res: Response) => {
 		}
 		const jobs = await prisma.job.findMany({
 			where: whereClause,
+			select: {
+				id: true,
+				title: true,
+				company: true,
+				salary: true,
+				location: true,
+				featured: true,
+			}
 		});
 
 		res.status(200).json({ jobs });

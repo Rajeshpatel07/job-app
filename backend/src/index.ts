@@ -9,9 +9,6 @@ import path from 'path';
 const ENV = dotenv.config({ path: path.join(import.meta.dirname, '../../.env') });
 expand(ENV)
 
-console.log(process.env.PORT);
-console.log(process.env.DATABASE_URL)
-
 
 export const app = express();
 export const prisma = new PrismaClient();
