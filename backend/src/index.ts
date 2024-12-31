@@ -1,9 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { expand } from 'dotenv-expand';
 import router from './routes/routes.js';
 import { PrismaClient } from '@prisma/client';
-dotenv.config();
+import path from 'path';
+
+const ENV = dotenv.config({ path: path.join(import.meta.dirname, '../../.env') });
+expand(ENV)
+
+console.log(process.env.PORT);
+console.log(process.env.DATABASE_URL)
+
 
 export const app = express();
 export const prisma = new PrismaClient();

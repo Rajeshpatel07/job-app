@@ -1,25 +1,31 @@
 import { Request, Response } from "express";
 import { prisma } from "../index.js";
 
+
 export const getFeaturedJobs = async (req: Request, res: Response) => {
 	const category = req.query.category;
-	if (!category) {
-		res.status(400).json({ mesage: "Bad request" });
-		return;
-	}
+
 	try {
-		const jobs = await prisma.job.findMany({
-			where: {
-				featured: true,
+
+		let whereClause = { featured: true }; // Start with the common condition
+
+		if (category && category !== 'All') { // Check if category is provided AND is not "all"
+			whereClause = {
+				...whereClause, // Spread the existing condition
+				//@ts-ignore
 				category: {
-					name: category.toString()
-				}
-			}
-		})
+					name: category.toString(),
+				},
+			};
+		}
+		const jobs = await prisma.job.findMany({
+			where: whereClause,
+		});
+
 		res.status(200).json({ jobs });
-		return;
 	} catch (err) {
-		console.log(err);
+		console.error(err);
+		res.status(500).json({ message: 'Internal server error' });
 	}
 };
 
@@ -29,7 +35,8 @@ export const getCategories = async (req: Request, res: Response) => {
 		res.status(200).json({ categories: category });
 		return;
 	} catch (err) {
-		console.log(err)
+		console.log(err);
+		res.status(500).json({ message: 'Internal server error' });
 	}
 };
 
